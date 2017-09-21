@@ -1,0 +1,30 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int r,c;
+    while(scanf("%d%d",&r,&c),r,c){
+        int adj[r][c],i,j,k;
+        for(i=0;i<r;i++){
+            for(j=0;j<c;j++){
+                scanf("%d",&adj[i][j]);
+            }
+        }
+        i=r-1,j=0;
+
+        for(k=0;k<20;k++){
+            printf("%d %d\n",i,j);
+            if(!adj[i][j+1] && j+1<c)
+                j++;
+            else if(!adj[i-1][j] && i-1>-1)
+                i--;
+            else if(!adj[i][j-1] && j-1>-1)
+                j--;
+            else i++;
+
+            if(i==r-1 && j==0)
+                break;
+        }
+        printf("%d\n",k);
+    }
+}
