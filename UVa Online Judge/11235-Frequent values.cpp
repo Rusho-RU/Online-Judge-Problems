@@ -4,12 +4,13 @@ using namespace std;
 #define MAX 100
 #define INF 0x3f3f3f3f
 
-int kept[MAX], data[MAX], tree[4*MAX];
+int data[MAX], tree[4*MAX], leftFreq[4*MAX], rightFreq[4*MAX], leftVal[4*MAX], rightVal[4*MAX];
 
 void init(int node, int i, int j){
     printf("%d\n",node);
     if(i==j){
         tree[node] = data[i];
+        leftFreq[node] = rightFreq[node] = 1;
         return;
     }
 
@@ -20,7 +21,33 @@ void init(int node, int i, int j){
     init(left, i, mid);
     init(right, mid+1, j);
 
-    tree[node] = max(tree[left], tree[right]);
+    int val;
+
+    if(data[mid]==data[mid+1])
+        val = leftFreq[right] + rightFreq[left];
+    else
+        val=-1;
+
+    tree[node] = max(val, max(tree[left], tree[right]));
+
+    int cnt=leftFreq[left];
+
+    for(int k=cnt+1; k<=j; k++){
+        if(data[k] == data[i])
+            cnt++;
+    }
+
+    leftFreq[node] = cnt;
+
+    cnt = rightFreq[right];
+
+    for(int k=cnt+1; k>=i; k--){
+        if(data[k] == data[j])
+            cnt++;
+    }
+
+    rightFreq[node] = cnt;
+
     return;
 }
 
