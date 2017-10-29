@@ -1,47 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAX 201
 #define INF 0x3f3f3f3f
 
-vector<int>adj[MAX], cost[MAX];
-int dist[MAX];
+vector<pair<int, int> >edge;
+vector<int>cost;
+int dist[201], busyness[201];
 
-void SPFA(int sourceNode){
-    queue<int>q;
-    q.push(sourceNode);
-    dist[sourceNode] = 0;
+bool BellmanFord(int source, int n){
+    memset(dist, INF, sizeof dist);
 
-    while(!q.empty()){
-        int currentNode = q.front();
-        q.pop();
+    dist[source] = 0;
 
-        for(int i=0; i<adj[currentNode].size(); i++){
-            int nextNode = adj[currentNode][i];
-            int hold = dist[currentNode] + cost[currentNode][i];
+    for(int j=1; j<n; j++){
+        for(int i=0; i<edge.size(); i++){
+            int u = edge[i].first;
+            int v = edge[i].second;
+            int c = cost[i];
 
-            if(dist[nextNode]!=INF && hold<dist[nextNode])
-                continue;
-
-            if(hold < dist[nextNode]){
-                dist[nextNode] = hold;
-                q.push(nextNode);
-            }
+            if(dist[u]!=INF && dist[u] + c < dist[v])
+                dist[v] = dist[u] + c;
         }
     }
 
-    return;
-}
+    for(int i=0; i<edge.size(); i++){
+        int u = edge[i].first;
+        int v = edge[i].second;
+        int c = cost[i];
 
-void reset(int n){
-    for(int i; i<n; i++){
-        adj[i].clear();
-        cost[i].clear();
+        if(dist[u]!=INF && dist[u] + c < dist[v])
+            return true;
     }
 
-    memset(dist, INF, sizeof dist);
-
-    return;
+    return false;
 }
 
 int main(){
@@ -51,45 +42,43 @@ int main(){
     while(t--){
         int n;
         scanf("%d",&n);
-        int busyness[n];
 
-        reset(n);
-
-        for(int i=0; i<n; i++){
+        for(int i=0; i<n; i++)
             scanf("%d",&busyness[i]);
-        }
 
-        int edge;
-        scanf("%d",&edge);
+        int e;
+        scanf("%d",&e);
 
-        for(int i=0; i<edge; i++){
-            int u,v;
-            scanf("%d %d",&u,&v);
+        while(e--){
+            int u, v;
+            scanf("%d%d",&u,&v);
             u--, v--;
 
-            adj[u].push_back(v);
+            edge.push_back(make_pair(u,v));
+            int val = busyness[v] - busyness[u];
 
-            int c = busyness[v]-busyness[u];
-            cost[u].push_back(c*c*c);
-
+            cost.push_back(val*val*val);
         }
 
-        SPFA(0);
+        bool hasNegativeCycle = BellmanFord(0,n);
 
-        int q;
-        scanf("%d",&q);
+        int query;
+        scanf("%d",&query);
         printf("Case %d:\n",++Case);
 
-        while(q--){
-            int d;
-            scanf("%d",&d);
-            d--;
+        while(query--){
+            int q;
+            scanf("%d",&q);
+            q--;
 
-            if(dist[d]==INF || dist[d]<3)
+            if(dist[q]>10000 || dist[q]<3)
                 puts("?");
             else
-                printf("%d\n",dist[d]);
+                printf("%d\n",dist[q]);
         }
+
+        cost.clear();
+        edge.clear();
     }
 
     return 0;
