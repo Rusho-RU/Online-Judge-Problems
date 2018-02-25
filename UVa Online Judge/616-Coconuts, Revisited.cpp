@@ -7,7 +7,7 @@ int main(){
         if(n<0) break;
         int i,j,hold,ans=0,limit=sqrt(n-1)+1;
         printf("%d coconuts, ",n);
-        for(i=7;i>1;i--){
+        for(i=8;i>1;i--){
             hold=n;
             for(j=0;j<i;j++){
                 hold--;
