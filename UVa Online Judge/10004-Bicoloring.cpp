@@ -1,41 +1,61 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main(){
-    int n,l;
-    while(scanf("%d",&n),n){
-        vector<int>adj[n];
-        int dist[n];
-        memset(dist,-1,n*sizeof (int));
-        scanf("%d",&l);
-        int i,a,b;
+#define MAX 250
 
-        for(i=0;i<l;i++){
-            scanf("%d %d",&a,&b);
-            adj[a].push_back(b);
+vector<int>adj[MAX];
+int dist[MAX];
+
+void reset(int n){
+    for(int i=0; i<n; i++){
+        adj[i].clear();
+        dist[i] = 0;
+    }
+}
+
+int main(){
+    int n,m;
+
+    while(scanf("%d",&n) && n){
+        scanf("%d",&m);
+
+        while(m--){
+            int u,v;
+            scanf("%d%d",&u,&v);
+            adj[u].push_back(v);
+            adj[v].push_back(u);
         }
 
-        bool Bicolorable=true;
         queue<int>q;
         q.push(0);
-        dist[0]=0;
-        while(!q.empty() && Bicolorable){
-            int x=q.front();
+        dist[0] = 1;
+
+        bool bicolorable = true;
+
+        while(!q.empty() && bicolorable){
+            int u = q.front();
             q.pop();
-            for(int i=0;i<adj[x].size();i++){
-                if(dist[adj[x][i]]==-1){
-                    dist[adj[x][i]]=dist[x]+1;
-                    q.push(adj[x][i]);
+
+            for(int i=0; i<adj[u].size(); i++){
+                int v = adj[u][i];
+
+                if(dist[v]==0){
+                    dist[v] = dist[u] + 1;
+                    q.push(v);
                 }
-                else if(dist[adj[x][i]]!=-1){
-                    int hold=dist[x]-dist[adj[x][i]]+1;
-                    if(hold%2)
-                        Bicolorable=false;
-                }
+
+                else if((dist[u] - dist[v] + 1) & 1)
+                    bicolorable = false;
             }
         }
-        if(Bicolorable) printf("BICOLORABLE.\n");
-        else printf("NOT BICOLORABLE.\n");
+
+        if(bicolorable)
+            puts("BICOLORABLE.");
+        else
+            puts("NOT BICOLORABLE.");
+
+        reset(n);
     }
+
     return 0;
 }
