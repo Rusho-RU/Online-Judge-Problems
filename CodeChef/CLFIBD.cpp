@@ -30,6 +30,16 @@ int main(){
                 dynamic = false;
                 break;
             }
+            else dynamic = true;
+        }
+
+        swap(data[index], data[index+1]);
+        for(int i=index+2;i<26; i++){
+            if(data[i-1] + data[i-2] != data[i]){
+                dynamic = false;
+                break;
+            }
+            else dynamic = true;
         }
 
         if(dynamic)
