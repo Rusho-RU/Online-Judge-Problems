@@ -1,39 +1,47 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define limit 1000001
-int main(){
-    map<int,bool>prime;
-    int l=sqrt(1000001)+1;
-    prime[3]=true,prime[2]=true;
-    for(int x=1;x<l;x++)
-        for (int y=1;y<l;y++){
-            int n=(4*x*x)+(y*y);
-            if (n<=limit && (n%12==1 || n%12==5))
-                prime[n]^=true;
 
-            n=(3*x*x)+(y*y);
-            if(n<=limit && n%12==7)
-                prime[n]^=true;
+#define MAX 1000050
 
-            n=(3*x*x)-(y*y);
-            if(x>y && n<=limit && n%12==11)
-                prime[n]^=true;
+bool not_prime[MAX];
+
+void sieve(){
+    not_prime[0] = not_prime[1] = true;
+
+    for(int i=2; i*i<MAX; i++){
+        if(!not_prime[i]){
+            for(int j=i*i; j<MAX; j+=i){
+                not_prime[j] = true;
+            }
         }
-    for(int r=5;r<l;r++)
-        if(prime[r])
-            for(int i=r*r;i<limit;i+=r*r)
-                prime[i]=false;
+    }
+
+    return;
+}
+
+int main(){
+    sieve();
     int n;
-    while(scanf("%d",&n),n){
-        int i;
-        int l1=n/2;
-        for(i=n-1;i>=l1;i-=2){
-            if(prime[i] && prime[n-i]){
-                printf("%d = %d + %d\n",n,n-i,i);
+
+    while(scanf("%d",&n) && n){
+        if(!not_prime[n-2]){
+            printf("%d = 2 + %d\n",n,n-2);
+            continue;
+        }
+
+        int limit = n/2 + 1;
+        bool found = false;
+
+        for(int a = 3; a<limit; a+=2){
+            if(!not_prime[a] && !not_prime[n-a]){
+                printf("%d = %d + %d\n",n,a,n-a);
+                bool found = true;
                 break;
             }
         }
-        if(i<l1) printf("%d = 0 + %d\n",n,n);
+
+        if(!found) puts("Goldbach's conjecture is wrong.");
     }
+
     return 0;
 }

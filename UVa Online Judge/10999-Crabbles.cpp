@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAX 10000001
+#define MAX 1000001
 
 int valueOf[26] = {}, mx;
+vector<pair<int, int> >crabbleList;
 
 struct node{
     int next[26];
@@ -36,17 +37,16 @@ void init(const string& s){
     return;
 }
 
-void traverse(int now, int value){
-    if(data[now].endword){
+void knapsack(int root, int index, int value){
+    if(data[root].endword){
         mx = max(mx, value);
-        return;
     }
 
-    for(int i=0; i<26; i++){
-        if(data[now].next[i] && valueOf[i]){
-            traverse(data[now].next[i], value + valueOf[i]);
-        }
-    }
+    if(index==crabbleList.size())
+        return;
+    int id = crabbleList[index].first;
+    if(data[root].next[id]) knapsack(data[root].next[id], index+1, value + crabbleList[index].second);
+    knapsack(root, index+1, value);
 
     return;
 }
@@ -64,6 +64,7 @@ int main(){
 
     while(words--){
         cin>>s;
+        sort(s.begin(), s.end());
         init(s);
     }
 
@@ -80,13 +81,16 @@ int main(){
 
         while(crabbles--){
             cin>>ch>>value;
-            int id = ch-'a';
-            valueOf[id] = max(valueOf[id], value);
+            crabbleList.push_back(make_pair(ch-'a', value));
         }
 
+        sort(crabbleList.begin(), crabbleList.end());
+
         mx = 0;
-        traverse(0,0);
+        knapsack(0, 0, 0);
         cout<<mx<<endl;
+
+        crabbleList.clear();
     }
 
     return 0;
