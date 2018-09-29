@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAX 100000050
+#define MAX 100000007
 
 bool not_prime[MAX];
-int prev_prime[MAX];
 vector<int>prime;
 
 void sieve(){
@@ -20,8 +19,7 @@ void sieve(){
 
     prime.push_back(2);
 
-    for(int i=3; i<MAX; i++){
-        prev_prime[i] = prime.size()-1;
+    for(int i=3; i<MAX; i+=2){
         if(!not_prime[i]){
             prime.push_back(i);
         }
@@ -32,24 +30,18 @@ void sieve(){
 
 int main(){
     sieve();
+    cout<<"wtf"<<endl;
     int n;
 
     while(scanf("%d",&n)==1){
-        int limit = n/2;
-        int index = prev_prime[limit];
-        bool found = false;
-
-        for(int i = index; i<prime.size() && prime[i]<n; i++){
-            int a = prime[i];
-            if(!not_prime[n-a]){
-                found = true;
-                printf("%d is the sum of %d and %d.\n",n, min(n-a, a), max(n-a, a));
-                break;
-            }
+        if(n%2){
+            if(!not_prime[n-2])
+                printf("%d is the sum of 2 and %d.\n",n,n-2);
+            else
+                printf("%d is not the sum of two primes!\n",n);
+            continue
         }
 
-        if(!found){
-            printf("%d is not the sum of two primes!\n",n);
-        }
+
     }
 }

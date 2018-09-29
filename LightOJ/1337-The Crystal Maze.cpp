@@ -1,76 +1,83 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct type{
-    int x,y;
-};
+#define MAX 550
 
-bool operator <( type const& left, type const& right ){
-    return left.x<right.x || (left.x==right.x && left.y>right.y);
+int dx[] = {0, 0, 1, -1};
+int dy[] = {1, -1, 0, 0};
+
+int row, col, crystal[MAX*MAX], inComponent[MAX][MAX];
+int grid[MAX][MAX];
+
+int indexing(char c){
+    if(c=='#')
+        return -1;
+    if(c=='.')
+        return 0;
+    return 1;
+}
+
+bool valid(int x, int y){
+    if(x>=0 && x<row && y>=0 && y<col)
+        return true;
+    return false;
+}
+
+void dfs(int ux, int uy, int component){
+    inComponent[ux][uy] = component;
+
+    if(grid[ux][uy]==1)
+        crystal[component]++;
+
+    for(int i=0; i<4; i++){
+        int vx = ux + dx[i];
+        int vy = uy + dy[i];
+
+        if(valid(vx, vy) && !inComponent[vx][vy] && grid[vx][vy] != -1)
+            dfs(vx, vy, component);
+    }
+
+    return;
 }
 
 int main(){
-    int t,row,col,query;
+    int t, Case=0;
     scanf("%d",&t);
-    for(int Case=1;Case<=t;Case++){
-        int i,j,x,y,crystal;
-        scanf("%d%d%d",&row,&col,&query);
-        getchar();
-        char adj[row][col+5];
-        for(i=0;i<row;i++){
-            for(j=0;j<col;j++)
-                scanf("%c",&adj[i][j]);
-            getchar();
-        }
-        map<type,bool>visited;
-        type temp;
-        queue<type>q;
-        printf("Case %d:\n",Case);
-        while(query--){
-            scanf("%d %d",&temp.x,&temp.y);
-            q.push(temp);
-            visited[temp]=true;
-            crystal=0;
-            if(adj[temp.x][temp.y]=='C') crystal=1;
 
-            while(!q.empty()){
-                temp=q.front();
-                q.pop();
-                x=temp.x,y=temp.y;
-                temp.x=x-1,temp.y=y;
-                if(x!=0 && !visited[temp] && (adj[x-1][y]=='.' || adj[x-1][y]=='C')){
-                    if(adj[x-1][y]=='C')
-                        crystal++;
-                    visited[temp]=true;
-                    q.push(temp);
-                }
+    while(t--){
+        int query, component=0;
+        scanf("%d %d %d",&row, &col, &query);
 
-                temp.x=x+1,temp.y=y;
-                if(x!=row-1 && !visited[temp] && (adj[x+1][y]=='.' || adj[x+1][y]=='C')){
-                    if(adj[x+1][y]=='C')
-                        crystal++;
-                    visited[temp]=true;
-                    q.push(temp);
-                }
+        memset(inComponent, 0, sizeof inComponent);
+        memset(crystal, 0, sizeof crystal);
 
-                temp.x=x,temp.y=y-1;
-                if(y!=0 && !visited[temp] && (adj[x][y-1]=='.' || adj[x][y-1]=='C')){
-                    if(adj[x][y-1]=='C')
-                        crystal++;
-                    visited[temp]=true;
-                    q.push(temp);
-                }
-
-                temp.x=x,temp.y=y+1;
-                if(y!=col-1 && !visited[temp] && (adj[x][y+1]=='.' || adj[x][y+1]=='C')){
-                    if(adj[x][y+1]=='C')
-                        crystal++;
-                    visited[temp]=true;
-                    q.push(temp);
-                }
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                char c;
+                scanf(" %c",&c);
+                grid[i][j] = indexing(c);
             }
-            printf("%d\n",crystal);
+        }
+
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                if(inComponent[i][j] || grid[i][j]==-1)
+                    continue;
+
+                dfs(i, j, ++component);
+            }
+        }
+
+        printf("Case %d:\n",++Case);
+
+        while(query--){
+            int x, y;
+            scanf("%d%d",&x,&y);
+            x--, y--;
+
+            printf("%d\n", crystal[inComponent[x][y]]);
         }
     }
+
     return 0;
 }
