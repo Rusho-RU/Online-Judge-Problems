@@ -18,6 +18,12 @@ void egcd(long long a, long long b, long long *x, long long *y){
 }
 
 int main(){
+    long long x, y;
+
+    egcd(3, -2, &x, &y);
+
+    cout<<x<<" "<<y<<" "<<gcd<<endl;
+
     long long n;
     while(scanf("%lld",&n) && n){
         long long c1,n1,c2,n2,x,y;
