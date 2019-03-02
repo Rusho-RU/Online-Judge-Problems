@@ -1,75 +1,65 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAX 250
+#define FasterIO ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
+#define all(v) v.begin(), v.end()
+#define MAX 220
 
-int dx[] = {-1,-1,0,0,1,1};
-int dy[] = {-1,0,-1,1,0,1};
+int dx[6] = {-1, -1,  0, 0, 1, 1};
+int dy[6] = {-1,  0, -1, 1, 0, 1};
 
-bool isBlack[MAX][MAX];
+int n;
+char grid[MAX][MAX];
 bool visited[MAX][MAX];
 
-bool valid(int x, int y, int n){
-    if(x>=0 && x<n && y>=0 && y<n)
-        return true;
-    return false;
+bool valid(int x, int y){
+    return (x>=0 && x<n && y>=0 && y<n);
 }
 
-bool dfs(int sx, int sy, int n){
-    if(sx==n-1)
-        return true;
+bool bfs(){
+    queue<pair<int, int> >q;
 
-    visited[sx][sy] = true;
+    memset(visited, false, sizeof visited);
 
-    for(int i=0; i<6; i++){
-        int x = sx + dx[i];
-        int y = sy + dy[i];
-        if(valid(x, y, n) && isBlack[x][y] && !visited[x][y] && dfs(x, y, n))
-            return true;
-    }
-
-    return false;
-}
-
-bool isRowConnected(int n){
-    for(int j=0; j<n; j++){
-        if(isBlack[0][j]){
-            if(dfs(0, j, n))
-                return true;
-        }
-    }
-
-    return false;
-}
-
-void reset(int n){
     for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            isBlack[i][j] = visited[i][j] = false;
+        q.push({0, i});
+    }
+
+    while(!q.empty()){
+        int ux = q.front().first;
+        int uy = q.front().second;
+        q.pop();
+
+        for(int i=0; i^6; i++){
+            int vx = ux+dx[i];
+            int vy = uy+dy[i];
+
+            if(valid(vx, vy) && !visited[vx][vy] && grid[vx][vy]=='b'){
+                visited[vx][vy] = true;
+                if(vx==n-1)
+                    return true;
+
+                q.push({vx, vy});
+            }
         }
     }
+
+    return false;
 }
 
 int main(){
-    int n, Case=0;
+    FasterIO;
 
-    while(scanf("%d",&n) && n){
-        char ch;
+    int Case=0;
 
-        for(int i=0; i<n; i++){
-            for(int j=0; j<n; j++){
-                scanf(" %c",&ch);
-                if(ch=='b')
-                    isBlack[i][j] = 1;
+    while(cin>>n && n){
+        for(int i=0; i^n; i++){
+            for(int j=0; j^n; j++){
+                cin>>grid[i][j];
             }
         }
 
-        if(isRowConnected(n))
-            printf("%d B\n",++Case);
-        else
-            printf("%d W\n",++Case);
-
-        reset(n);
+        cout<<++Case<<" "<<(bfs() ? 'B' : 'W')<<"\n";
     }
 
     return 0;
