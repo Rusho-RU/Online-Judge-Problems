@@ -19,32 +19,29 @@ int main(){
         int n = s.size();
         string ans = "";
 
-        int cnt=0;
         bool used[10] = {};
 
-        for(int i=0, j; i<n; i++){
-            if(used[s[i]-'0']){
-                ans+=s[i];
-                continue;
+        for(int x=0; x<9; x++){
+            for(int i=1; i<s.size(); i++){
+                if(s[i]<s[i-1] && !used[s[i-1]-'0'])
+                    used[s[i-1]-'0'] = true;
+                else
+                    ans+=s[i-1];
             }
-            for(j=i+1; j<n; j++){
-                if(s[j]<s[i] && !used[s[j]-'0']){
-                    cnt++;
-                    used[s[i]-'0'] = true;
-                    break;
-                }
-            }
-            if(j==n)
-                ans+=s[i];
+
+            ans+=s.back();
+
+            swap(ans, s);
+            ans.clear();
         }
 
-        while(!ans.empty() && ans.back()>d)
-            ans.pop_back(), cnt++;
+        if(s.back()>d && !used[s.back()-'0'])
+            s.pop_back();
 
-        for(int i=0; i<cnt; i++)
-            ans+=d;
+        for(int i=s.size(); i<n; i++)
+            s+=d;
 
-        cout<<ans<<endl;
+        cout<<s<<endl;
     }
 
     return 0;

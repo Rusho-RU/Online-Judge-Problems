@@ -7,7 +7,17 @@ using namespace std;
 int main(){
     FasterIO;
 
+    int n;
 
+    while(cin>>n){
+        long long ans = 0;
+
+        for(int i=3; i<=n; i++)
+            ans+=i*(i-1);
+
+        cout<<ans<<endl;
+    }
 
     return 0;
 }
+

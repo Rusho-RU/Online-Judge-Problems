@@ -7,7 +7,15 @@ using namespace std;
 int main(){
     FasterIO;
 
+    int n, k;
 
+    while(cin>>n>>k){
+        long long data[n];
+
+        for(int i=0; i<n; i++)
+            cin>>data[i];
+    }
 
     return 0;
 }
+
