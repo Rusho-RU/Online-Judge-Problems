@@ -3,6 +3,7 @@ using namespace std;
 
 #define FasterIO ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
 #define all(v) v.begin(), v.end()
+const int MOD = 1e9+7;
 
 int main(){
     FasterIO;
@@ -11,35 +12,33 @@ int main(){
     cin>>t;
 
     while(t--){
-        int n;
+        int n, total=0;
         cin>>n;
-        int coin[n+1], total=0;
+
+        int coin[n+1];
 
         for(int i=1; i<=n; i++){
             cin>>coin[i];
             total+=coin[i];
         }
 
-        int target = total/2;
+        int t = total/2;
 
-        int dp[n+1][target+1];
+        int dp[2][t+1];
 
-        for(int i=0; i<=n; i++)
-            dp[i][0] = 0;
-        for(int i=0; i<=target; i++)
+        dp[0][0] = dp[1][0] = 0;
+
+        for(int i=0; i<=t; i++)
             dp[0][i] = 0;
 
-        for(int i=1; i<=n; i++){
-            for(int j=0; j<=target; j++){
-                dp[i][j] = coin[i]<=j ? max(dp[i-1][j], dp[i-1][j-coin[i]]+coin[i]) : dp[i-1][j];
-            }
-        }
+        int now = 1;
+        for(int i=1; i<=n; i++, now^=1)
+            for(int j=0; j<=t; j++)
+                dp[now][j] = j>=coin[i] ? max(dp[now^1][j], dp[now^1][j-coin[i]]+coin[i]) : dp[now^1][j];
 
-        int a = dp[n][target];
-        int b = total-a;
-
-        cout<<abs(a-b)<<endl;
+        cout<<total-2*dp[n&1][t]<<endl;
     }
 
     return 0;
 }
+

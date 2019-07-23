@@ -17,6 +17,12 @@ void calculate(){
 int main(){
     calculate();
     int t;
+
+    for(int i=3; i<10; i++){
+        cout<<nCr[i][3]<<" ";
+    }
+    cout<<endl;
+
     scanf("%d",&t);
 
     while(t--){
